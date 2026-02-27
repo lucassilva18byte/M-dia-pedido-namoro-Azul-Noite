@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pedido Especial 💙</title>
+
+<style>
+:root{
+  --azul1:#0a0f2c;
+  --azul2:#111a44;
+  --azul3:#1c2a6b;
+  --azulGlow:#4da6ff;
+}
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:'Poppins', sans-serif;
+}
+
+body{
+  height:100vh;
+  overflow:hidden;
+  background:linear-gradient(135deg,var(--azul1),var(--azul2),var(--azul3));
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  color:white;
+  position:relative;
+}
+
+/* ESTRELAS */
+.estrelas span{
+  position:absolute;
+  width:2px;
+  height:2px;
+  background:white;
+  border-radius:50%;
+  opacity:0.8;
+  animation:piscar 2s infinite alternate;
+}
+
+@keyframes piscar{
+  from{opacity:0.2;}
+  to{opacity:1;}
+}
+
+/* CORAÇÕES */
+.coracoes span{
+  position:absolute;
+  font-size:18px;
+  animation:subir 10s linear infinite;
+  opacity:0.4;
+}
+
+@keyframes subir{
+  from{transform:translateY(100vh);}
+  to{transform:translateY(-10vh);}
+}
+
+/* CARD */
+.card{
+  background:rgba(10,15,44,0.85);
+  backdrop-filter:blur(15px);
+  padding:55px;
+  width:90%;
+  max-width:650px;
+  border-radius:30px;
+  border:1px solid rgba(77,166,255,0.5);
+  box-shadow:
+    0 0 40px rgba(77,166,255,0.4),
+    0 20px 60px rgba(0,0,0,0.8);
+  text-align:center;
+  animation:entrar 1.5s ease;
+  position:relative;
+  z-index:2;
+}
+
+@keyframes entrar{
+  from{opacity:0; transform:translateY(70px) scale(0.85);}
+  to{opacity:1; transform:translateY(0) scale(1);}
+}
+
+h1{
+  margin-bottom:25px;
+  font-size:26px;
+  background:linear-gradient(90deg,#8ec5ff,#ffffff);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+
+.texto{
+  font-size:18px;
+  min-height:120px;
+  margin-bottom:25px;
+  line-height:1.6;
+}
+
+/* BOTÕES */
+button{
+  padding:12px 28px;
+  border:none;
+  border-radius:30px;
+  cursor:pointer;
+  font-weight:bold;
+  margin:10px;
+  transition:0.3s;
+}
+
+.sim{
+  background:linear-gradient(90deg,#4da6ff,#8ec5ff);
+  color:#0a0f2c;
+}
+
+.sim:hover{
+  transform:scale(1.1);
+}
+
+.nao{
+  background:#ffffff20;
+  color:white;
+  position:relative;
+}
+
+.final{
+  font-size:22px;
+  margin-top:20px;
+  animation:fadeIn 1.5s ease forwards;
+  opacity:0;
+  background:linear-gradient(90deg,#4da6ff,#ffffff);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+
+@keyframes fadeIn{
+  to{opacity:1;}
+}
+</style>
+</head>
+
+<body>
+
+<div class="estrelas"></div>
+<div class="coracoes"></div>
+
+<div class="card">
+  <h1>Em uma noite como essa... 💙</h1>
+  <div class="texto" id="texto"></div>
+  <div id="botoes">
+    <button id="continuar" onclick="proximaFrase()" class="sim">Continuar ✨</button>
+  </div>
+  <div id="finalMsg"></div>
+</div>
+
+<script>
+
+/* ESTRELAS */
+const estrelas = document.querySelector(".estrelas");
+for(let i=0;i<80;i++){
+  let star=document.createElement("span");
+  star.style.left=Math.random()*100+"vw";
+  star.style.top=Math.random()*100+"vh";
+  star.style.animationDuration=(1+Math.random()*2)+"s";
+  estrelas.appendChild(star);
+}
+
+/* CORAÇÕES */
+const coracoes = document.querySelector(".coracoes");
+for(let i=0;i<25;i++){
+  let heart=document.createElement("span");
+  heart.innerHTML="💙";
+  heart.style.left=Math.random()*100+"vw";
+  heart.style.animationDuration=(8+Math.random()*5)+"s";
+  heart.style.fontSize=(15+Math.random()*20)+"px";
+  coracoes.appendChild(heart);
+}
+
+/* TEXTO */
+const frases=[
+"Desde que você entrou na minha vida...",
+"Tudo ficou mais leve.",
+"Você virou meu lugar favorito.",
+"E eu quero que cada noite seja ao seu lado..."
+];
+
+let index = 0;
+let escrevendo = false;
+const texto = document.getElementById("texto");
+const continuarBtn = document.getElementById("continuar");
+const botoes = document.getElementById("botoes");
+const finalMsg = document.getElementById("finalMsg");
+
+function digitarFrase(frase){
+    escrevendo = true;
+    texto.innerHTML = "";
+    let char = 0;
+
+    function escrever(){
+        if(char < frase.length){
+            texto.innerHTML += frase.charAt(char);
+            char++;
+            setTimeout(escrever, 35);
+        } else {
+            escrevendo = false;
+        }
+    }
+    escrever();
+}
+
+function proximaFrase(){
+    if(escrevendo) return;
+
+    if(index < frases.length){
+        digitarFrase(frases[index]);
+        index++;
+    } else {
+        mostrarPedido();
+    }
+}
+
+function mostrarPedido(){
+    texto.innerHTML = "Você aceita namorar comigo? 💙✨";
+    continuarBtn.style.display="none";
+
+    botoes.innerHTML = `
+        <button class="sim" onclick="aceitou()">SIM 💙</button>
+        <button class="nao" onmouseover="fugir(this)">NÃO 😅</button>
+    `;
+}
+
+function fugir(btn){
+    btn.style.position="absolute";
+    btn.style.top=Math.random()*200+"px";
+    btn.style.left=Math.random()*200+"px";
+}
+
+function aceitou(){
+    botoes.style.display="none";
+    finalMsg.innerHTML="<div class='final'>Agora é oficial 💙🌌<br>Você é minha namorada!</div>";
+}
+
+</script>
+
+</body>
+</html>
